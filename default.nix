@@ -55,7 +55,7 @@ in
         printf '%s\n' \
         "http:"   \
         "  routers:"   \
-        "    homer:" \
+        "    unifi-controller:" \
         "      rule: \"Host(\`${cfg.traefik.fqdn}\`)\"" \
         "      service: \"unifi-controller\"" \
         "      entryPoints:" \
