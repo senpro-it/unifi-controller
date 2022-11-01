@@ -36,7 +36,7 @@ in
           "--net=proxy"
         ];
         volumes = [
-          "/srv/podman/unifi-controller/volume.d/unifi-controller:/config"
+          "unifi-controller:/config"
         ];
         environment = {
           PUID = "1000";
@@ -48,9 +48,6 @@ in
       };
     };
     system.activationScripts = {
-      makeUnifiControllerBindVolDirectories = ''
-        mkdir -p /srv/podman/unifi-controller/volume.d/unifi-controller
-      '';
       makeUnifiControllerTraefikConfiguration = ''
         printf '%s\n' \
         "http:"   \
