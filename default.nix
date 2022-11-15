@@ -47,30 +47,30 @@ in
         autoStart = true;
       };
     };
-    system.activationScripts = {
-      makeUnifiControllerTraefikConfiguration = ''
-        printf '%s\n' \
-        "http:"   \
-        "  routers:"   \
-        "    unifi-controller:" \
-        "      rule: \"Host(\`${cfg.traefik.fqdn}\`)\"" \
-        "      service: \"unifi-controller\"" \
-        "      entryPoints:" \
-        "      - \"https2-tcp\"" \
-        "      tls: true" \
-        "  services:" \
-        "    unifi-controller:" \
-        "      loadBalancer:" \
-        "        passHostHeader: true" \
-        "        servers:" \
-        "        - url: \"https://unifi-controller:8443\"" \
-        "        serversTransport: \"unifi-controller\"" \
-        "  serversTransports:" \
-        "    unifi-controller:" \
-        "      serverName: \"${cfg.traefik.fqdn}\"" \
-        "      insecureSkipVerify: true" \
-        > /srv/podman/traefik/volume.d/traefik/conf.d/unifi-controller.yml
-      '';
+    systemd.services = {
+      "podman-unifi-controller" = {
+        postStart = ''
+          ${pkgs.coreutils-full}/bin/printf '%s\n' "http:" \
+          "  routers:"   \
+          "    unifi-controller:" \
+          "      rule: \"Host(\`${cfg.traefik.fqdn}\`)\"" \
+          "      service: \"unifi-controller\"" \
+          "      entryPoints:" \
+          "      - \"https2-tcp\"" \
+          "      tls: true" \
+          "  services:" \
+          "    unifi-controller:" \
+          "      loadBalancer:" \
+          "        passHostHeader: true" \
+          "        servers:" \
+          "        - url: \"https://unifi-controller:8443\"" \
+          "        serversTransport: \"unifi-controller\"" \
+          "  serversTransports:" \
+          "    unifi-controller:" \
+          "      serverName: \"${cfg.traefik.fqdn}\"" \
+          "      insecureSkipVerify: true" > $(${pkgs.podman}/bin/podman volume inspect traefik --format "{{.Mountpoint}}")/conf.d/apps-unifi-controller.yml
+        '';
+      };
     };
   };
 
